@@ -1,0 +1,324 @@
+@startuml
+class Obstacle {
++ <<Create>> Obstacle(double,double,double,double)
+}
+
+class NEAT {
++ <<Create>> NEAT(int,int,int)
+- Genome createInitialGenome()
++ void evolve()
+- void speciate()
+- void mutate(Genome)
+- void addConnection(Genome)
+- void addNode(Genome)
+- Species getBestSpecies()
++ Genome getBestGenome()
++ void updateOverallBest()
++ int getGeneration()
++ List<Genome> getPopulation()
++ List<Species> getSpecies()
++ void setCompatibilityThreshold(double)
++ Genome getOverallBestGenome()
++ void setOverallBestGenome(Genome)
++ void setEnableParallelism(boolean)
+- void readObject(java.io.ObjectInputStream)
+}
+
+class Floor {
++ <<Create>> Floor(int,int,int,int)
++ void draw(Graphics,int)
++ Rectangle getBounds()
++ int getY()
++ int getX()
++ int getWidth()
++ int getHeight()
+}
+
+class MarioGameFrame {
++ <<Create>> MarioGameFrame(NEAT,int,BiConsumer<NEAT,Integer>)
+- JPanel createControlPanel()
+- void initializeGeneration()
+- void updateActiveGamePanel(int)
+- void startTraining()
++ void actionPerformed(ActionEvent)
+- void updateSimulation()
+- void processSingleAgent(int)
+- double[] getInputsFromGameState(GamePanel,int)
+- double raycast(GamePanel,int,int,int)
+- double[] findNearestEnemy(GamePanel,Player)
+- boolean isOnGround(GamePanel,Player)
+- void finalizeGeneration()
++ void dispose()
++ NEAT getNeat()
++ int getCurrentGeneration()
+}
+
+class Gene {
++ <<Create>> Gene(int,int,int,double,boolean)
++ Gene copy()
++ int getInnovation()
++ int getFromNode()
++ int getToNode()
++ double getWeight()
++ boolean isEnabled()
++ void setWeight(double)
++ void setEnabled(boolean)
++ boolean equals(Object)
++ int hashCode()
++ int compareTo(Gene)
+}
+
+class Agent {
++ <<Create>> Agent(double,double,double,Genome)
++ void move(double,double)
++ boolean collidesWithAny(List<Obstacle>)
++ double distanceTo(Target)
++ double[] getSensorReadings(List<Obstacle>,Target)
+- double senseInDirection(double,double,double,double,List<Obstacle>)
+- double normalizeDistance(double)
++ Genome getGenome()
++ double getFitness()
++ boolean isDead()
++ void setDead(boolean)
++ void reachedTarget()
++ boolean hasReachedTarget()
++ void reset()
+}
+
+class Pipe {
++ <<Create>> Pipe(int,int,String)
+- void loadImage(String)
++ void draw(Graphics,int)
++ java.awt.Rectangle getBounds()
++ int getY()
++ int getX()
+}
+
+class Platform {
++ <<Create>> Platform(int,int,int,int)
++ void draw(Graphics,int)
++ Rectangle getBounds()
++ int getY()
++ int getX()
++ int getWidth()
++ int getHeight()
+}
+
+class Player {
++ <<Create>> Player(int,int,GamePanel)
+- void loadImage()
+- void updateBounds()
++ void draw(Graphics,int)
++ void update(Platform[],Floor,List<Enemy>,List<Pipe>,Set<Integer>)
+- void checkCollision(Platform[],Floor,List<Enemy>,List<Pipe>)
++ Rectangle getBounds()
++ int getHeight()
++ int getX()
++ int getY()
++ void setAlive(boolean)
+}
+
+class NeuralNetwork {
++ <<Create>> NeuralNetwork(Genome)
+- void initializeNetwork()
+- List<Integer> topologicalSort()
+- void dfsTopologicalSort(int,Map<Integer,Boolean>,List<Integer>)
++ double[] activate(double[])
+- double fastSigmoid(double)
++ double[] calculate(double[])
+- void readObject(java.io.ObjectInputStream)
+}
+
+class Target {
++ <<Create>> Target(double,double,double)
+}
+
+class MarioNEATLauncher {
++ {static} void main(String[])
+}
+
+class GamePanel {
++ <<Create>> GamePanel()
+- void loadImage()
+- Platform[] createPlatforms()
+- List<Enemy> createEnemies()
+- List<Pipe> createPipes()
+# void paintComponent(Graphics)
+- void paintGame(Graphics)
+- boolean isVisible(Rectangle,Rectangle)
++ void actionPerformed(ActionEvent)
+- void updateCamera()
++ void keyPressed(KeyEvent)
++ void keyReleased(KeyEvent)
++ void keyTyped(KeyEvent)
++ void gameOver()
++ void restartGame()
++ Player getPlayer()
++ Platform[] getPlatforms()
++ Floor getFloor()
++ List<Enemy> getEnemies()
++ List<Pipe> getPipes()
++ boolean isGameOver()
++ void cleanup()
+}
+
+class MarioBestAgentViewer {
++ <<Create>> MarioBestAgentViewer(Genome)
+- JPanel createControlPanel()
+- void startPlaying()
++ void actionPerformed(ActionEvent)
+- void updateGameState()
+- double[] getInputsFromGameState()
+- double raycast(GamePanel,int,int,int)
+- double[] findNearestEnemy(GamePanel,Player)
+- boolean isOnGround(GamePanel,Player)
+}
+
+class HelloApplication {
++ void start(Stage)
++ {static} void main(String[])
+}
+
+class Genome {
++ <<Create>> Genome(int,int)
++ <<Create>> Genome(Genome)
+- void initializeCache()
++ void addGene(Gene)
++ void addNode(NodeGene)
++ double distance(Genome,double,double,double)
++ {static} Genome crossover(Genome,Genome,Random)
++ List<Gene> getGenes()
++ Map<Integer,NodeGene> getNodes()
++ int getInputs()
++ int getOutputs()
++ double getFitness()
++ void setFitness(double)
++ int getSpeciesId()
++ void setSpeciesId(int)
+- void readObject(java.io.ObjectInputStream)
+}
+
+class MainWindow {
++ <<Create>> MainWindow()
++ {static} void main(String[])
+- void openTrainingMode()
+- void openPlayBestMode()
+- Genome loadBestGenome()
+- void saveTrainingState()
+- void loadTrainingState()
+}
+
+class MainWindow$TrainingState {
++ <<Create>> TrainingState(NEAT,int)
++ NEAT getNeat()
++ int getGeneration()
+}
+
+class Enemy {
++ <<Create>> Enemy(int,int,String)
+- void loadImage(String)
++ void draw(Graphics,int)
++ void update()
++ java.awt.Rectangle getBounds()
++ int getX()
++ int getY()
+}
+
+class NodeGene {
++ <<Create>> NodeGene(int,Type)
++ <<Create>> NodeGene(int,Type,double,double)
++ NodeGene copy()
++ int getId()
++ Type getType()
++ double getValue()
++ void setValue(double)
++ double getX()
++ double getY()
++ boolean equals(Object)
++ int hashCode()
+}
+
+enum Type {
++  INPUT
++  HIDDEN
++  OUTPUT
++  BIAS
+}
+
+class InnovationTracker {
++ <<Create>> InnovationTracker(int)
++ int getInnovationNumber(int,int)
++ int getNextNodeId()
++ void reset()
+- void readObject(java.io.ObjectInputStream)
+}
+
+class InnovationTracker$ConnectionKey {
++ <<Create>> ConnectionKey(int,int)
++ boolean equals(Object)
++ int hashCode()
+}
+
+class MarioPlayBestMode {
++ <<Create>> MarioPlayBestMode(Genome,Runnable)
+- JPanel createControlPanel()
+- void startPlaying()
++ void actionPerformed(ActionEvent)
+- void updateGameState()
+- double[] getInputsFromGameState()
+- double raycast(int,int,int)
+- double[] findNearestEnemy(Player)
+- boolean isOnGround(Player)
+}
+
+class Species {
++ <<Create>> Species(int,Genome)
++ void addMember(Genome)
++ void reset()
++ double calculateAverageFitness()
++ void updateBestFitness()
++ Genome getBestGenome()
++ Genome produceOffspring(Random)
+- Genome selectGenome(Random)
++ int getId()
++ List<Genome> getMembers()
++ Genome getRepresentative()
++ void setRepresentative(Genome)
++ double getBestFitness()
++ int getStaleness()
+- void readObject(java.io.ObjectInputStream)
+}
+
+class HelloController {
+# void onHelloButtonClick()
+}
+
+
+
+Rectangle <|-- Obstacle
+Serializable <|.. NEAT
+ActionListener <|.. MarioGameFrame
+JFrame <|-- MarioGameFrame
+Comparable <|.. Gene
+Serializable <|.. Gene
+Rectangle <|-- Agent
+Serializable <|.. NeuralNetwork
+Circle <|-- Target
+ActionListener <|.. GamePanel
+KeyListener <|.. GamePanel
+JPanel <|-- GamePanel
+ActionListener <|.. MarioBestAgentViewer
+JFrame <|-- MarioBestAgentViewer
+Application <|-- HelloApplication
+Serializable <|.. Genome
+JFrame <|-- MainWindow
+MainWindow +.. MainWindow$TrainingState
+Serializable <|.. MainWindow$TrainingState
+Serializable <|.. NodeGene
+Serializable <|.. InnovationTracker
+InnovationTracker +.. InnovationTracker$ConnectionKey
+Serializable <|.. InnovationTracker$ConnectionKey
+ActionListener <|.. MarioPlayBestMode
+JFrame <|-- MarioPlayBestMode
+Serializable <|.. Species
+@enduml
